@@ -1,0 +1,8 @@
+# gp_l_scale: 28.01
+# gp_sigma_f: 1.76
+gp_l_scale: 15.00
+gp_sigma_f: 3.0
+gp_sigma_n: 0.12
+predict_sigma_x: 0.12
+predict_model: 0.2
+predict_data: 0.26

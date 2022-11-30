@@ -1,0 +1,11 @@
+sampling_number: 5
+sector_num: 360
+seed_radius: 15.5
+seed_lower: -0.25
+seed_upper: 0.25
+gp_lscale: 28.01
+gp_sigmaF: 1.76
+gp_sigmaN: 0.12
+insac_model: 0.2
+insac_data: 1.0
+gp_sensor_heigh: 0.85

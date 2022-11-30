@@ -1,0 +1,20 @@
+地面分割:
+一.LineFit
+1.mm_ground_segment.cpp
+2.mm_seg_node.cpp的groundSeg方法（选取Z值小的三维点）
+3.ground_segmentation.cpp的segment方法
+  A.在insertPoints()函数中 首先按照线程数进行循环，循环中传入的是点云索引
+  B.insertionThread()函数中输入点云数据，通过角度和径向距离确定每个点所在栅格位置，保存在segments_和bin_index_中，并且在segment_coordinates_中保存每个点的二维坐标
+  C.getLines()函数 将n_segments按线程分割，在每一个Segment类中调用fitSegmentLines()函数进行线性拟合，将求得的line保存在segment_lines中，然后将line转换为3D坐标。保存在lines中std::list<PointLine> lines
+  D.assignCluster()函数 点云数据按线程分割，assignClusterThread()中求dist(竖直距离)来对segmentation进行赋值。由于当前segment中可能存在线段缺失导致找不到dist，那就左右外扩segment寻找，若能找到视作地面
+
+二.高斯拟合（根据LineFit的分割结果，对于其认定的非地面点通过拟合回归的方式二次判定）
+1.predictThreadPool划分线程
+2.predictThread设置超参，制作训练和测试样本
+3.Regression调用TrainData计算协方差矩阵，增加测量噪声，求解回归值和方差
+
+点云聚类
+1.single_detection_test_ours.cpp读取json文件并加载点云
+2.detection.cpp中移除地面并对目标聚类
+3.detectionMultiBeta函数通过水平距离、高差、法向量夹角选取相似点，再结合区域生长方法完成聚类。
+

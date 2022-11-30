@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!--
+Software License Agreement (BSD)
+
+\file      intxt.launch
+\authors   Shen Zhang <zhangshen2018@outlook.com>
+\copyright Copyright (c) 2020, XXX, All rights reserved.
+
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WAR-
+RANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, IN-
+DIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+
+<launch>
+
+    <node name="line_ground_seg" pkg="line_ground_seg" type="line_ground_seg_node_test" output="screen">
+        <param name="lidar_topic_name" type="string" value="/kitti/velo/pointcloud" />
+        <param name="line_ground_topic_name" type="string" value="/line/ground/pointcloud" />
+        <param name="line_obstalce_topic_name" type="string" value="/line/obstacle/pointcloud" />
+        <rosparam command="load" file="$(find line_ground_seg)/launch/line_ground_seg_params_test.yaml" ns = "line/"/>
+    </node>
+
+</launch>

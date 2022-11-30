@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!--
+Software License Agreement (BSD)
+
+\file      intxt.launch
+\authors   Shen Zhang <zhangshen2018@outlook.com>
+\copyright Copyright (c) 2020, XXX, All rights reserved.
+
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WAR-
+RANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, IN-
+DIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+
+<launch>
+    <arg name = "cloud_path" default = "-c /home/zs/zs/master/experiment_data/detection_test/classical/people1_t.ply"/>
+    <arg name = "save_path" default = " -s /home/zs/zs/master/experiment_data/detection_test/classical/"/>
+    <node name="ground_seg_test" pkg="z_ground_test" type="z_ground_test_node"  args="$(arg cloud_path)  $(arg save_path)" output="screen" >
+        <param name="lidar_topic_name" type="string" value="/kitti/velo/pointcloud" />
+        <param name="line_ground_topic_name" type="string" value="/line/ground/pointcloud" />
+        <param name="line_obstalce_topic_name" type="string" value="/line/obstacle/pointcloud" />
+        <param name="mm_ground_topic_name" type="string" value="/mm/ground/pointcloud" />
+        <param name="mm_obstalce_topic_name" type="string" value="/mm/obstacle/pointcloud" />
+        <rosparam command="load" file="$(find z_ground_test)/launch/line_ground_seg_params.yaml" ns = "line/"/>
+        <rosparam command="load" file="$(find z_ground_test)/launch/line_regression_params.yaml" ns = "mm"/>
+        <rosparam command="load" file="$(find z_ground_test)/launch/gp_regression_params.yaml" ns = "mm"/>
+        <rosparam command="load" file="$(find z_ground_test)/launch/gp_insac_params.yaml" ns = "gp"/>
+    </node>
+
+</launch>

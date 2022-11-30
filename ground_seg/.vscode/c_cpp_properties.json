@@ -1,0 +1,20 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "",
+        "limitSymbolsToIncludedHeaders": true
+      },
+      "includePath": [
+        "/opt/ros/noetic/include/**",
+        "/home/ytj/Documents/summer_vocation/ground_seg/src/common_zs/include/**",
+        "/home/ytj/Documents/summer_vocation/ground_seg/src/gp_insac/include/**",
+        "/home/ytj/Documents/summer_vocation/ground_seg/src/line_ground_seg/include/**",
+        "/home/ytj/Documents/summer_vocation/ground_seg/src/mm_ground_seg/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS"
+    }
+  ],
+  "version": 4
+}
