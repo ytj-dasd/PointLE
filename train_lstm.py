@@ -75,8 +75,8 @@ if __name__ == '__main__':
 											help='size for each minibatch')
     parser.add_argument('--num_epochs', type=int, default=200,
 											help='maximum number of epochs')
-    parser.add_argument('--char_dim', type=int, default=10,
-											help='character embedding dimensions')
+    parser.add_argument('--char_dim', type=int, default=128,
+											help='character embedding dimensions: 128/256/512')
     parser.add_argument('--learning_rate', type=float, default=0.004,
 											help='initial learning rate')
     parser.add_argument('--weight_decay', type=float, default=1e-4,
@@ -89,7 +89,7 @@ if __name__ == '__main__':
     optimizer = optim.SGD(model.parameters(), lr=args.learning_rate, weight_decay=args.weight_decay)
     criterion = BCEFocalLoss()
     #criterion = nn.BCELoss()
-    dataloader = DataLoader(dataset = ObjectDataset('pre_process/new_dataset/train.txt'),
+    dataloader = DataLoader(dataset = ObjectDataset('dataset/train.txt'),
                         batch_size = args.batch_size,
                         shuffle = True)
 
@@ -99,6 +99,7 @@ if __name__ == '__main__':
         running_loss = 0
         for instances, labels  in dataloader:
             instances, labels = instances.to(device), labels.to(device)
+            #print(instances)
             optimizer.zero_grad()
             
             #print(instances.size())
@@ -115,27 +116,28 @@ if __name__ == '__main__':
 
             loss.backward()
             optimizer.step()
-        if epoch==150:
-                visual_ouput(model)
+        #if epoch==150:
+                #visual_ouput(model)
         #test_acc = test(model,'pre_process/ml_test.txt')
-        good_car,total_car = test(model,'pre_process/new_dataset/test_car.txt') 
-        good_pedestrain,total_pedestrain = test(model,'pre_process/new_dataset/test_pedestrain.txt') 
-        good_bic,total_bic = test(model,'pre_process/new_dataset/test_bicycle.txt')
+        good_car,total_car = test(model,'dataset/test_car.txt') 
+        good_pedestrain,total_pedestrain = test(model,'dataset/test_pedestrain.txt') 
+        good_bic,total_bic = test(model,'dataset/test_bicycle.txt')
         car_acc = good_car / total_car
         pedestrain_acc = good_pedestrain / total_pedestrain
         biy_acc = good_bic / total_bic
         test_acc = (good_bic+good_car+good_pedestrain)/(total_bic+total_car+total_pedestrain)
 
-        val_good_car,val_total_car = test(model,'pre_process/new_dataset/val_car.txt') 
-        val_good_pedestrain,val_total_pedestrain = test(model,'pre_process/new_dataset/val_pedestrain.txt') 
-        val_good_bic,val_total_bic = test(model,'pre_process/new_dataset/val_bicycle.txt')
-        val_car_acc = val_good_car / val_total_car
-        val_pedestrain_acc = val_good_pedestrain / val_total_pedestrain
-        val_biy_acc = val_good_bic / val_total_bic
-        val_acc = (val_good_bic+val_good_car+val_good_pedestrain)/(val_total_bic+val_total_car+val_total_pedestrain)
+        # val_good_car,val_total_car = test(model,'pre_process/new_dataset/val_car.txt') 
+        # val_good_pedestrain,val_total_pedestrain = test(model,'pre_process/new_dataset/val_pedestrain.txt') 
+        # val_good_bic,val_total_bic = test(model,'pre_process/new_dataset/val_bicycle.txt')
+        # val_car_acc = val_good_car / val_total_car
+        # val_pedestrain_acc = val_good_pedestrain / val_total_pedestrain
+        # val_biy_acc = val_good_bic / val_total_bic
+        # val_acc = (val_good_bic+val_good_car+val_good_pedestrain)/(val_total_bic+val_total_car+val_total_pedestrain)
 
         print('epoch: ',epoch, ' loss: ',running_loss / len(dataloader),' train_acc: ', float(good_pred / total_data) , ' test_acc: ', test_acc, ' car_acc: ', car_acc, ' pedestrain_acc: ', pedestrain_acc , ' biy_acc: ', biy_acc)
-        print(' val_acc: ', val_acc, ' val_car_acc: ', val_car_acc, ' val_pedestrain_acc: ', val_pedestrain_acc , ' val_biy_acc: ', val_biy_acc)
+        #print(total_data,total_car,total_pedestrain,total_bic)
+        #print(' val_acc: ', val_acc, ' val_car_acc: ', val_car_acc, ' val_pedestrain_acc: ', val_pedestrain_acc , ' val_biy_acc: ', val_biy_acc)
         print(' ')
         #fout.write(str(epoch) + ' ' + str(running_loss / len(dataloader)) + ' ' + str(float(good_pred / total_data)) + ' ' +  str(test_acc) + '\n')
     #torch.save(model,'/home/ytj/文档/mlp-pytorch/model/model.pth')

@@ -17,9 +17,9 @@ class IrisDataset(Dataset):
         instance = self.__data[index,:]
         #data = torch.from_numpy(instance[:-3])
         #label = torch.from_numpy(instance[135:138])
-        data = torch.FloatTensor(instance[:150])
+        data = torch.FloatTensor(instance[:11535])
         #distance = torch.FloatTensor(instance[135:150])
-        label = torch.FloatTensor(instance[150:153])
+        label = torch.FloatTensor(instance[11535:11538])
 
         return data, label
 
@@ -31,14 +31,24 @@ class Classifier(nn.Module):
         super().__init__()
 
 #1.mlp层数和神经元个数设置
-        self.fc1 = nn.Linear(150,200)
-        self.fc2 = nn.Linear(200,64)
-        self.fc3 = nn.Linear(64,32)
-        self.fc4 = nn.Linear(32,3)
+        self.embedding=nn.Embedding(200,128)
+        self.fc1 = nn.Linear(13440,2048)
+        self.fc2 = nn.Linear(2048,1024)
+        self.fc3 = nn.Linear(1024,256)
+        self.fc4 = nn.Linear(256,3)
 #2.sigmoid激活函数
     def forward(self, x):
         #x = torch.sigmoid(self.fc1(x)) 
-        x = F.relu(self.fc1(x))
+        #print('size: ',x.shape)
+        embeds = self.embedding(x[:,11520:11535].long())
+        #print('size1: ',embeds.shape)
+        embeds = torch.flatten(embeds,1,2)
+        #print('size2: ',embeds.shape)
+        x = x[:,0:11520]
+        embeds = torch.cat((x,embeds), dim=1)
+        #print('size3: ',embeds.shape)
+
+        x = F.relu(self.fc1(embeds))
         x = F.relu(self.fc2(x)) 
         x = F.relu(self.fc3(x))
         return torch.sigmoid(self.fc4(x))
@@ -91,7 +101,7 @@ def visual_ouput(model):
             f.write('label: ' + str(labels[j]) +' output: ' + str(pred_val[j]) + '\n')
 
 if __name__ == '__main__':
-    dataloader = DataLoader(dataset=IrisDataset('pre_process/train.txt'),
+    dataloader = DataLoader(dataset=IrisDataset('dataset/train.txt'),
                             batch_size=8,
                             shuffle=True)
 
@@ -128,11 +138,11 @@ if __name__ == '__main__':
 
             loss.backward()
             optimizer.step()
-        if epoch==149:
-                visual_ouput(model)
-        good_car,total_car = test(model,'pre_process/test_car.txt') 
-        good_pedestrain,total_pedestrain = test(model,'pre_process/test_pedestrain.txt') 
-        good_bic,total_bic = test(model,'pre_process/test_bicycle.txt')
+        # if epoch==149:
+        #         visual_ouput(model)
+        good_car,total_car = test(model,'dataset/test_car.txt') 
+        good_pedestrain,total_pedestrain = test(model,'dataset/test_pedestrain.txt') 
+        good_bic,total_bic = test(model,'dataset/test_bicycle.txt')
         car_acc = good_car / total_car
         pedestrain_acc = good_pedestrain / total_pedestrain
         biy_acc = good_bic / total_bic

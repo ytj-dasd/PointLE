@@ -15,8 +15,9 @@ class LSTMClassifier(nn.Module):
 
 		self.embedding_dim = embedding_dim
 		self.hidden_dim = hidden_dim
+		self.embedding=nn.Embedding(200,self.embedding_dim)
 
-		self.lstm = nn.LSTM(embedding_dim, hidden_dim, num_layers=1)
+		self.lstm = nn.LSTM(embedding_dim+768, hidden_dim, num_layers=1)
 
 		self.hidden2out = nn.Linear(hidden_dim, output_size)
 
@@ -31,8 +32,18 @@ class LSTMClassifier(nn.Module):
 	def forward(self, batch):
 		
 		self.hidden = self.init_hidden(batch.size(0))
-		#print('size: ',batch.shape)
-		outputs, (ht, ct) = self.lstm(batch.transpose(0,1), self.hidden)
+		batch = batch.transpose(0,1)
+		#print('size: ',batch[:,:,767])
+		embeds = self.embedding(batch[:,:,768].long())
+		#embeds = embeds.transpose(2,3)
+		batch = batch[:,:,0:768]
+		#print('size1: ',batch.shape)
+		#print('size2: ',embeds.shape)
+		embeds = torch.cat((batch,embeds), dim=2)
+		#print('size3: ',embeds.shape)
+
+		outputs, (ht, ct) = self.lstm(embeds, self.hidden)
+		#outputs, (ht, ct) = self.lstm(batch.transpose(0,1), self.hidden)
 
 		# ht is the last hidden state of the sequences
 		# ht = (1 x batch_size x hidden_dim)
