@@ -28,6 +28,8 @@ class ObjectDataset(Dataset):
         return data,label
 
     def __len__(self):
+        print('hhhhhhhhhhhhhhhhhhhhhhhhhh')
         return self.__data.shape[0]
+    
 
 
